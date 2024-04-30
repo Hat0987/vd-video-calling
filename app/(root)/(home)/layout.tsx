@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: 'http://localhost:3000/icons/logo-preview.png',
+        url: 'https://vd-connect.vercel.app/icons/logo-preview.png',
         width: 1200, // Set the width of the image
         height: 630, // Set the height of the image
         alt: 'Preview Image' // Alt text for the image
