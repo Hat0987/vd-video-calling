@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import {
   DeviceSettings,
@@ -15,7 +14,6 @@ const MeetingSetup = ({
 }: {
   setIsSetupComplete: (value: boolean) => void;
 }) => {
-  // https://getstream.io/video/docs/react/guides/call-and-participant-state/#call-state
   const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
   const callStartsAt = useCallStartsAt();
   const callEndedAt = useCallEndedAt();
@@ -31,18 +29,31 @@ const MeetingSetup = ({
     );
   }
 
-  // https://getstream.io/video/docs/react/ui-cookbook/replacing-call-controls/
-  const [isMicCamToggled, setIsMicCamToggled] = useState(false);
+  const [isMicToggled, setIsMicToggled] = useState(true); // Initially set to true
+  const [isVideoToggled, setIsVideoToggled] = useState(true); // Initially set to true
 
   useEffect(() => {
-    if (isMicCamToggled) {
-      call.camera.disable();
+    // Set isMicToggled and isVideoToggled to false when call starts
+    if (callStartsAt && !callTimeNotArrived) {
+      setIsMicToggled(false);
+      setIsVideoToggled(false);
+    }
+  }, [callStartsAt, callTimeNotArrived]);
+
+  useEffect(() => {
+    // Disable/enable camera and microphone based on isMicToggled and isVideoToggled state
+    if (!isMicToggled) {
       call.microphone.disable();
     } else {
-      call.camera.enable();
       call.microphone.enable();
     }
-  }, [isMicCamToggled, call.camera, call.microphone]);
+
+    if (!isVideoToggled) {
+      call.camera.disable();
+    } else {
+      call.camera.enable();
+    }
+  }, [isMicToggled, isVideoToggled, call.camera, call.microphone]);
 
   if (callTimeNotArrived)
     return (
@@ -64,21 +75,28 @@ const MeetingSetup = ({
       <h1 className="text-center text-2xl font-bold">Setup</h1>
       <VideoPreview />
       <div className="flex h-16 items-center justify-center gap-3">
-        <label className="flex items-center justify-center gap-2 font-medium">
-          <input
-            type="checkbox"
-            checked={isMicCamToggled}
-            onChange={(e) => setIsMicCamToggled(e.target.checked)}
-          />
-          Join with mic and camera off
-        </label>
+        <div className="flex items-center justify-center gap-2 font-medium">
+          <span onClick={() => setIsMicToggled(!isMicToggled)}>
+            {isMicToggled ? (
+              <img src="/icons/mic-on.svg" alt="Mic On" />
+            ) : (
+              <img src="/icons/mic-off.svg" alt="Mic Off" />
+            )}
+          </span>
+          <span onClick={() => setIsVideoToggled(!isVideoToggled)}>
+            {isVideoToggled ? (
+              <img src="/icons/video-on.svg" alt="Video On" />
+            ) : (
+              <img src="/icons/video-off.svg" alt="Video Off" />
+            )}
+          </span>
+        </div>
         <DeviceSettings />
       </div>
       <Button
         className="rounded-md bg-green-500 px-4 py-2.5"
         onClick={() => {
           call.join();
-
           setIsSetupComplete(true);
         }}
       >

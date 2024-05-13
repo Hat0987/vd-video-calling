@@ -31,14 +31,14 @@ export default function RootLayout({
           },
           variables: {
             colorText: "#fff",
-            colorPrimary: "#0E78F9",
-            colorBackground: "#1C1F2E",
-            colorInputBackground: "#252A41",
+            colorPrimary: "#000000",
+            colorBackground: "#000000",
+            colorInputBackground: "#000000",
             colorInputText: "#fff",
           },
         }}
       >
-        <body className={`${inter.className} bg-dark-2`}>
+        <body className={`${inter.className} bg-black`}>
           <Toaster />
           {children}
         </body>
