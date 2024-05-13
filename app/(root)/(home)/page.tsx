@@ -1,10 +1,19 @@
+import { useState, useEffect } from 'react';
 import MeetingTypeList from '@/components/MeetingTypeList';
 
 const Home = () => {
-  const now = new Date();
+  const [currentTime, setCurrentTime] = useState(new Date());
 
-  const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-  const date = (new Intl.DateTimeFormat('en-US', { dateStyle: 'full' })).format(now);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval); // Clean up the interval on component unmount
+  }, []); // Empty dependency array ensures the effect runs only once on component mount
+
+  const time = currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+  const date = (new Intl.DateTimeFormat('en-US', { dateStyle: 'full' })).format(currentTime);
 
   return (
     <section className="flex size-full flex-col gap-5 text-white">
